@@ -15,18 +15,22 @@
 	};
 	
 var start = function starts(config,context){
-		this.h = config.h;
-		this.m = config.m;
-		this.s=config.s;
-		this.direction =config.direction;
-		this.formate= config.formate;
-		this.ref = context;
+		this.setHour(config.h);
+		this.setMinute(config.m);
+		this.setSecond(config.s);
+		this.setDirection('down'); //
+		this.setFormate(config.formate);
+		this.setDomElement(context);
 		this.init();
 		
 	};
 	start.prototype.constructor =start;
 	start.prototype={
 			init:function(){
+				
+				this.boot();
+			},
+			boot:function(){
 			
 				var date,c_h,c_m,c_s,that = this;
 				setInterval(function(){
@@ -34,12 +38,13 @@ var start = function starts(config,context){
 					 c_h = date.getHours();
 					 c_m = date.getMinutes();
 					 c_s = date.getSeconds();
-					 switch(this.direction){
+					 
+					 switch(that.direction){
 					 case 'up':
 						 	that.up(c_h,c_m,c_s);
 						 break;
 					 case 'down':
-						  that.down(c_h, c_m, c_s);
+						  that.display(that.down(c_h, c_m, c_s));
 						 break;
 					default:
 						break;
@@ -53,12 +58,90 @@ var start = function starts(config,context){
 			},
 			up:function(h,m,s){
 				
+				return [h,m,s]
 			},
 			down:function(h,m,s){
 				
-			},
-			display:function(){
+				if(this.getSecond() < s){
+					if(this.getMinute() !=0){
+						s = (this.getSecond()+60)-s;
+						this.setSecond(s);
+						this.setMinute(this.getMinute()-1);
+					}else{
+						s= 0;
+						this.setSecond(0);
+					}
+					
+				}else{
+					s= this.getSecond()-s;
+				}
+				if(this.getMinute() <m){
+					if(this.getHour() !=0){
+						this.setMinute(this.getMinute()+60);
+						this.setHour(this.getHour()-1);
+						m = (this.getMinute())-m;
+					}else{
+						m=0; this.setMinute(0);
+						}
+					
+				}else{
+					m= this.getMinute()-m;
+				}if(this.getHour()<h){
+					if(this.getHour() !=0){
+						h= this.getHour()-h;
+					}else{
+						h=0;
+						this.setHour(0);
+					}
+				//	this.setHour(this.getHour()+24);
+					/* here set Days */
+					
+				}else{
+					h = this.getHour()-h;
+				}
 				
+				return [h,m,s];
+			},
+			display:function(data){
+				this.getDomElement().each(function(){
+					$(this).html(data[0]+' :'+data[1]+' :'+data[2]);
+				});
+			},
+			setSecond:function(value){
+				this.second = value;
+			},
+			getSecond:function(){
+				return this.second;
+			},
+			setMinute:function(value){
+				this.minute =value;
+			},
+			getMinute:function(){
+				return this.minute;
+			},
+			setHour:function(value){
+				this.hour =value;
+			},
+			getHour:function(){
+				return this.hour;
+			},
+			setDirection:function(value){
+				this.direction =value;
+			},
+			getDirection:function(){
+				return this.direction;
+			},
+			setDomElement:function(value){
+				this.domElement =value;
+			},
+			getDomElement: function(){
+				return this.domElement;
+			},
+			setFormate:function(value){
+				this.formate = value;
+			},
+			getFormate:function(){
+				return this.formate;
 			}
 	};
  
