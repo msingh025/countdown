@@ -64,9 +64,10 @@ var start = function starts(config,context){
 				
 				if(this.getSecond() < s){
 					if(this.getMinute() !=0){
-						s = (this.getSecond()+60)-s;
-						this.setSecond(s);
+					
+						this.setSecond(this.getSecond()+60);
 						this.setMinute(this.getMinute()-1);
+						s = (this.getSecond())-s;
 					}else{
 						s= 0;
 						this.setSecond(0);
